@@ -1,0 +1,56 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template/template.xhtml">
+	<ui:define name="content">
+
+	
+				<h:form>
+					
+
+					<h2>
+						<p:outputLabel value="#{i18nconfig['service.label.yourservices']}" />
+					</h2>
+					
+					<p:dataTable id="servTable" var="serv" value="#{serviceController.services}">
+					    <p:column headerText="#{i18nconfig['service.label.serviceName']}">
+					     <h:link value="#{serv.serviceName}" outcome="service">
+			        		<f:param name="serviceName" value="#{serv.serviceName}"/>
+			        		<f:param name="serviceId" value="#{serv.serviceId}"/>
+			        	 </h:link>
+				        </p:column>
+					    
+					    <p:column headerText="#{i18nconfig['service.label.description']}">
+					        <h:outputText value="#{serv.description}" />
+					    </p:column>
+					
+					    <p:column headerText="#{i18nconfig['service.label.startTime']}">
+					        <h:outputText value="#{serv.startTime}" />
+					    </p:column>
+					
+					    <p:column headerText="#{i18nconfig['service.label.endTime']}">
+					        <h:outputText value="#{serv.endTime}" />
+					    </p:column>
+					    <p:column headerText="#{i18nconfig['service.label.minTime']}">
+					        <h:outputText value="#{serv.minTime}" />
+					    </p:column>
+					    <p:column headerText="#{i18nconfig['service.label.incrementTime']}">
+					        <h:outputText value="#{serv.incrementTime}" />
+					    </p:column>
+					    <p:column headerText="#{i18nconfig['service.label.maxTime']}">
+					        <h:outputText value="#{serv.maxTime}" />
+					    </p:column>
+					    <p:column headerText="#{i18nconfig['service.label.bufferBetweenBookings']}">
+					        <h:outputText value="#{serv.bufferBetweenBookings}" />
+					    </p:column>
+					    <p:column headerText="#{i18nconfig['service.label.needApproval']}">
+					        <h:outputText value="#{serv.needApproval}" />
+					    </p:column>
+					</p:dataTable>					
+				</h:form>
+
+		
+	</ui:define>
+</ui:composition>

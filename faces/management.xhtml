@@ -1,0 +1,225 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template/template.xhtml">
+	<ui:define name="content">
+
+		<p:tabView id="mgmtTab" orientation="left" style="border:none;">
+			<p:tab title="#{i18nconfig['management.link.service']}">
+				<h:form>
+					<p>
+						<p:outputLabel for="serviceName" value="#{i18nconfig['service.label.serviceName']}" />
+						<p:inputText id="serviceName" value="#{serviceController.serv.serviceName}" size="10" />
+						<p:outputLabel for="description" value="#{i18nconfig['service.label.description']}" />
+						<p:inputText id="description" value="#{serviceController.serv.description}" size="30" />
+						<br/>
+						<p:outputLabel for="startTime" value="#{i18nconfig['service.label.startTime']}" />
+						<p:inputMask id="startTime" value="#{serviceController.serv.startTime}" mask="99:99" size="5">
+						</p:inputMask>
+						<p:outputLabel for="endTime" value="#{i18nconfig['service.label.endTime']}" />
+						<p:inputMask id="endTime" value="#{serviceController.serv.endTime}"  mask="99:99" size="5">
+						</p:inputMask>
+						<p:outputLabel for="minTime" value="#{i18nconfig['service.label.minTime']}" />
+						<p:inputMask id="minTime" value="#{serviceController.serv.minTime}"  mask="99?9" size="3">
+						</p:inputMask>
+						<br/>
+						<p:outputLabel for="incrementTime" value="#{i18nconfig['service.label.incrementTime']}" />
+						<p:inputMask id="incrementTime" value="#{serviceController.serv.incrementTime}"  mask="?99" size="2">
+						</p:inputMask>
+						
+						<p:outputLabel for="maxTime" value="#{i18nconfig['service.label.maxTime']}" />
+						<p:inputMask id="maxTime" value="#{serviceController.serv.maxTime}"  mask="99?9" size="3">
+						</p:inputMask>
+						
+						<p:outputLabel for="bufferBetweenBookings" value="#{i18nconfig['service.label.bufferBetweenBookings']}" />
+						<p:inputMask id="bufferBetweenBookings" value="#{serviceController.serv.bufferBetweenBookings}"  mask="?99" size="2">
+						</p:inputMask>
+						<br/>
+						 <p:outputLabel for="needApproval"  value="#{i18nconfig['service.label.needApproval']}" />
+						 <p:selectBooleanButton id="needApproval" value="#{serviceController.serv.needApproval}" onLabel="Yes" offLabel="No" style="width:60px" />
+						
+					</p>
+					<p>
+						<p:commandButton value="#{i18nconfig['service.button.addservice']}" update="servTable" action="#{serviceController.addService}" />
+						<p:commandButton value="#{i18nconfig['common.button.reset']}" type="reset" />
+					</p>
+					
+					<h2>
+						<p:outputLabel value="#{i18nconfig['service.label.yourservices']}" />
+					</h2>
+					
+					<p:dataTable id="servTable" var="serv" value="#{serviceController.services}">
+					    <p:column headerText="#{i18nconfig['service.label.serviceName']}">
+					        <h:outputText value="#{serv.serviceName}" />
+					    </p:column>
+					    
+					    <p:column headerText="#{i18nconfig['service.label.description']}">
+					        <h:outputText value="#{serv.description}" />
+					    </p:column>
+					
+					    <p:column headerText="#{i18nconfig['service.label.startTime']}">
+					        <h:outputText value="#{serv.startTime}" />
+					    </p:column>
+					
+					    <p:column headerText="#{i18nconfig['service.label.endTime']}">
+					        <h:outputText value="#{serv.endTime}" />
+					    </p:column>
+					    <p:column headerText="#{i18nconfig['service.label.minTime']}">
+					        <h:outputText value="#{serv.minTime}" />
+					    </p:column>
+					    <p:column headerText="#{i18nconfig['service.label.incrementTime']}">
+					        <h:outputText value="#{serv.incrementTime}" />
+					    </p:column>
+					    <p:column headerText="#{i18nconfig['service.label.maxTime']}">
+					        <h:outputText value="#{serv.maxTime}" />
+					    </p:column>
+					    <p:column headerText="#{i18nconfig['service.label.bufferBetweenBookings']}">
+					        <h:outputText value="#{serv.bufferBetweenBookings}" />
+					    </p:column>
+					    <p:column headerText="#{i18nconfig['service.label.needApproval']}">
+					        <h:outputText value="#{serv.needApproval}" />
+					    </p:column>
+					</p:dataTable>					
+				</h:form>
+			</p:tab>
+
+			<p:tab title="#{i18nconfig['management.link.schedule']}">
+				<h:form id="scheduleForm">
+					<p:growl id="messages" showDetail="true" />
+
+					<p:schedule id="schedule" value="#{providerScheduleController.eventModel}" 
+						editable="true" 
+						draggable="false"
+						resizable="false"
+						widgetVar="v_schedule" 
+						ignoreTimezone="false" 
+						view="agendaWeek">
+						<p:ajax event="dateSelect"
+							listener="#{providerScheduleController.onDateSelect}"
+							update="newAppointment" oncomplete="PF('addingDialog').show();" />
+						<p:ajax event="eventSelect"
+							listener="#{providerScheduleController.onEventSelect}"/>
+					</p:schedule>
+
+					<p:dialog widgetVar="addingDialog" 
+						header="#{i18nconfig['schedule.dialog.title']}" 
+						showEffect="clip" 
+						hideEffect="clip"
+						modal="true">
+						<h:panelGrid id="newAppointment" columns="2">
+							<h:outputLabel for="serviceName"
+								value="#{i18nconfig['service.label.servicename']}" />
+							<p:autoComplete id="serviceName"
+								value="#{providerScheduleController.serviceName}"
+								completeMethod="#{providerScheduleController.listServiceNames}"
+								dropdown="true"/>
+			
+							<h:outputLabel for="addingDialog_from"
+								value="#{i18nconfig['schedule.dialog.label.from']}" />
+							<p:inputMask id="addingDialog_from"
+								value="#{providerScheduleController.newAppointment.startDate}"
+								mask="99/99/9999 99:99">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+							</p:inputMask>
+			
+							<h:outputLabel for="addingDialog_to"
+								value="#{i18nconfig['schedule.dialog.label.to']}" />
+							<p:inputMask id="addingDialog_to" value="#{providerScheduleController.newAppointment.endDate}"
+								mask="99/99/9999 99:99">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+							</p:inputMask>
+						</h:panelGrid>
+						
+						<p:commandButton id="makeButton"
+								value="#{i18nconfig['schedule.dialog.button.makeappointment']}"
+								update="schedule messages"
+								actionListener="#{providerScheduleController.addEvent}"
+								oncomplete="PF('addingDialog').hide();"/>
+					</p:dialog>
+					
+					<p:dialog widgetVar="editingDialog" 
+						header="#{i18nconfig['schedule.dialog.title']}" 
+						showEffect="clip" 
+						hideEffect="clip"
+						modal="true">
+						<h:panelGrid id="existingAppointment" columns="2">
+							<h:outputLabel value="#{i18nconfig['appointment.dialog.serviceName']}" />
+							<h:outputLabel value="#{providerScheduleController.serviceName}" />
+			
+							<h:outputLabel for="editingDialog_from"
+								value="#{i18nconfig['schedule.dialog.label.from']}" />
+							<p:inputMask id="editingDialog_from"
+								value="#{providerScheduleController.existingAppointment.startDate}"
+								mask="99/99/9999 99:99">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+							</p:inputMask>
+			
+							<h:outputLabel for="editingDialog_to"
+								value="#{i18nconfig['schedule.dialog.label.to']}" />
+							<p:inputMask id="editingDialog_to" value="#{providerScheduleController.existingAppointment.endDate}"
+								mask="99/99/9999 99:99">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+							</p:inputMask>
+							
+							<p:commandButton id="changeButton"
+								value="#{i18nconfig['schedule.dialog.button.changeappointment']}"
+								update="schedule messages"
+								actionListener="#{providerScheduleController.changeEvent}"
+								oncomplete="PF('editingDialog').hide();" />
+								
+							<p:commandButton id="cancelButton" 
+							value="#{i18nconfig['schedule.dialog.button.cancelappointment']}" 
+								update="schedule messages"
+								actionListener="#{providerScheduleController.cancelEvent}"
+								oncomplete="PF('editingDialog').hide();" />						
+						</h:panelGrid>
+					</p:dialog>		
+					
+					<p:dialog widgetVar="acceptingDialog"
+						header="#{i18nconfig['schedule.dialog.title']}" 
+						showEffect="clip" 
+						hideEffect="clip"
+						modal="true">
+						<h:panelGrid id="userAppointment" columns="2">
+							<h:outputLabel value="#{i18nconfig['appointment.dialog.servicename']}" />
+							<h:outputLabel value="#{providerScheduleController.serviceName}" />
+							
+							<h:outputLabel for="acceptingDialog_from"
+								value="#{i18nconfig['schedule.dialog.label.from']}" />
+							<p:inputMask id="acceptingDialog_from"
+								value="#{providerScheduleController.userAppointment.startDate}"
+								mask="99/99/9999 99:99">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+							</p:inputMask>
+			
+							<h:outputLabel for="acceptingDialog_to"
+								value="#{i18nconfig['schedule.dialog.label.to']}" />
+							<p:inputMask id="acceptingDialog_to" value="#{providerScheduleController.userAppointment.endDate}"
+								mask="99/99/9999 99:99">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+							</p:inputMask>
+							
+							<p:commandButton id="acceptButton"
+								value="#{i18nconfig['schedule.dialog.button.acceptappointment']}"
+								update="schedule messages"
+								actionListener="#{providerScheduleController.acceptEvent}"
+								oncomplete="PF('acceptingDialog').hide();" />
+								
+							<p:commandButton id="rejectButton" 
+							value="#{i18nconfig['schedule.dialog.button.rejectappointment']}" 
+								update="schedule messages"
+								actionListener="#{providerScheduleController.rejectEvent}"
+								oncomplete="PF('acceptingDialog').hide();" />						
+						</h:panelGrid>
+					</p:dialog>
+				</h:form>
+			</p:tab>
+			<!-- 
+			<p:tab title="#{i18nconfig['management.link.appointment']}">
+			</p:tab>
+			 -->
+		</p:tabView>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,31 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:p="http://primefaces.org/ui"
+template="/WEB-INF/template/template.xhtml">
+<ui:define name="content">
+
+<p:feedReader value="http://rss.news.yahoo.com/rss/sports" var="feed">
+    <h:outputText value="#{feed.title}" style="font-weight: bold;display:block"/>
+    <h:outputText value="#{feed.description.value}" escape="false"/>
+    <p:separator />
+</p:feedReader>
+
+
+
+<style type="text/css">
+    .value {
+        width: 1000px;
+    }
+    
+	.fc-event-time{
+	    display:none;
+	}
+
+	.ui-growl {
+		left:20px;
+	}
+</style>
+</ui:define>
+</ui:composition>

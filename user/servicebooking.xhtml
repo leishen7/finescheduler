@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:p="http://primefaces.org/ui"
+template="/WEB-INF/template/template.xhtml">
+<ui:define name="content">
+
+<p:dataTable var="serviceBooking" value="#{serviceBookingView.bookingList}">
+    <p:column headerText="ServiceName">
+        <h:outputText value="#{serviceBooking.serviceName}" />
+    </p:column>
+
+    <p:column headerText="StartTime">
+        <h:outputText value="#{serviceBooking.startTime}" />
+    </p:column>
+
+    <p:column headerText="EndTime">
+        <h:outputText value="#{serviceBooking.endTime}" />
+    </p:column>
+
+</p:dataTable>
+
+
+<style type="text/css">
+    .value {
+        width: 1000px;
+    }
+    
+	.fc-event-time{
+	    display:none;
+	}
+
+	.ui-growl {
+		left:20px;
+	}
+</style>
+</ui:define>
+</ui:composition>

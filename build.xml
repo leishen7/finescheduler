@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="deploy" name="schd">
+	<property file="build.properties"/>
+
+	<target name="tomcat-start">
+		<exec executable="cmd">
+			<arg value="/c"/>
+			<arg value="${tomcat.home}/bin/startup.bat"/>
+		</exec>
+	</target>
+
+	<target name="tomcat-stop">
+		<exec executable="cmd">
+			<arg value="/c"/>
+			<arg value="${tomcat.home}/bin/shutdown.bat"/>
+		</exec>
+	</target>
+
+	<target name="deploy" description="deploy to Tomcat">
+		<war destfile="C:/shenlei/schd/ROOT.war" webxml="src/main/webapp/WEB-INF/web.xml">
+			<fileset dir="src/main/webapp" />
+		</war>
+	</target>
+</project>

@@ -1,0 +1,82 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template/usertemplate.xhtml">
+	<ui:define name="content">
+        <p style="position:absolute; left:20%;">
+		<h:outputLabel for="name" value="#{userAppointmentController.serv.serviceName}" />
+		</p>
+    <h:form>
+    <p:growl id="messages" showDetail="true"/>
+			<p:schedule id="schedule" value="#{userAppointmentController.eventModel}" 
+				class="scheduleContainer"
+				editable="true" 
+				draggable="false"
+				resizable="false"
+				widgetVar="v_schedule" 
+				ignoreTimezone="false" 
+				minTime="06:00:00"
+				maxTime="22:00:00"
+				view="agendaWeek">
+					
+				<p:ajax event="eventSelect"
+					listener="#{userAppointmentController.onEventSelect}"
+					update="existingAppointment"/>
+	
+			</p:schedule>
+		<div style="position:absolute; center;padding-left: 150px;">
+			<h:outputLabel value="_______" style="background-color: #FFFF99;color:#FFFF99;" />
+			<h:outputLabel value="Requested  "  />
+			<h:outputLabel value="_______" style="background-color: #9DEDEC;color:#9DEDEC;" />
+			<h:outputLabel value="Confirmed  "  />
+			<h:outputLabel value="_______" style="background-color: #FFD1FF;color:#FFD1FF;" />
+			<h:outputLabel value=" Holiday         "  />
+		</div>
+					
+			<p:dialog widgetVar="editingDialog" 
+				header="#{i18nconfig['appointment.dialog.title']}" 
+				showEffect="clip" 
+				hideEffect="clip"
+				modal="true">
+				<h:panelGrid id="existingAppointment" columns="2">
+					<h:outputLabel value="#{i18nconfig['appointment.dialog.serviceName']}" />
+					<h:outputLabel value="#{userAppointmentController.existingAppointment.serviceBooking.serviceName}" />
+					
+					<h:outputLabel value="#{i18nconfig['appointment.dialog.provider']}"/>
+					<h:outputLabel value="#{userAppointmentController.existingAppointment.serviceBooking.provider}"/>	
+					
+					<h:outputLabel value="#{i18nconfig['appointment.dialog.status']}"/>
+					<h:outputLabel value="#{userAppointmentController.existingAppointment.serviceBooking.status}"/>					
+	
+					<h:outputLabel for="addingDialog_from"
+						value="#{i18nconfig['appointment.dialog.label.from']}" />
+					<h:outputLabel id="addingDialog_from"
+						value="#{userAppointmentController.existingAppointment.startDate}" >
+						<f:convertDateTime pattern="HH:mm MMM dd" />
+					</h:outputLabel>
+	
+						
+					<h:outputLabel for="addingDialog_to"
+						value="#{i18nconfig['appointment.dialog.label.to']}" />
+					<h:outputLabel id="addingDialog_to" value="#{userAppointmentController.existingAppointment.endDate}" >
+						<f:convertDateTime pattern="HH:mm MMM dd" />
+					</h:outputLabel>
+							
+					<h:outputLabel for="editingDialog_notes"
+						value="#{i18nconfig['appointment.dialog.label.notes']}" />
+					<h:outputLabel id="editingDialog_notes" value="#{userAppointmentController.existingAppointment.notes}" />
+			
+						
+					<p:commandButton id="cancelButton" 
+					value="#{i18nconfig['appointment.dialog.button.cancelappointment']}" 
+						update="schedule"
+						actionListener="#{userAppointmentController.cancelEvent}"
+						oncomplete="PF('editingDialog').hide();" />						
+				</h:panelGrid>
+			</p:dialog>			
+		</h:form>
+			
+	</ui:define>
+</ui:composition>

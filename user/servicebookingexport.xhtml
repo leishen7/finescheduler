@@ -1,0 +1,80 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:p="http://primefaces.org/ui"
+template="/WEB-INF/template/template.xhtml">
+<ui:define name="content">
+<h:form>
+
+<p:dataTable id="tbl" var="serviceBooking" value="#{serviceBookingView.bookingList}" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                 paginator="true" rows="10" style="margin-bottom:20px">
+
+        <f:facet name="{Exporters}">
+            <h:commandLink>
+                <p:graphicImage name="/schd/images/excel.png" width="24"/>
+                <p:dataExporter type="xls" target="tbl" fileName="bookingList" />
+            </h:commandLink>
+
+            <h:commandLink>
+                <p:graphicImage name="/images/pdf.png" width="24"/>
+                <p:dataExporter type="pdf" target="tbl" fileName="bookingList"/>
+            </h:commandLink>
+
+            <h:commandLink>
+                <p:graphicImage name="images/csv.png" width="24"/>
+                <p:dataExporter type="csv" target="tbl" fileName="bookingList" />
+            </h:commandLink>
+
+            <h:commandLink>
+                <p:graphicImage name="/images/xml.png" width="24"/>
+                <p:dataExporter type="xml" target="tbl" fileName="bookingList" />
+            </h:commandLink>
+        </f:facet>
+
+
+
+    <p:column headerText="ServiceName">
+        <h:outputText value="#{serviceBooking.serviceName}" />
+    </p:column>
+
+    <p:column headerText="StartTime">
+        <h:outputText value="#{serviceBooking.startTime}" />
+    </p:column>
+
+    <p:column headerText="EndTime">
+        <h:outputText value="#{serviceBooking.endTime}" />
+    </p:column>
+
+</p:dataTable>
+
+ <h3>Export Page Data</h3>
+
+    <h:commandLink>
+        <p:graphicImage library="images"  name="csv.png" value="csv.png"/>
+        <p:dataExporter type="csv" target="tbl" fileName="bookingList" pageOnly="true" />
+    </h:commandLink>
+
+    <h:commandLink>
+        <p:graphicImage library="schd/images"  name="xml.png" value="xml.png" />
+        <p:dataExporter type="xml" target="tbl" fileName="bookingList" pageOnly="true" />
+    </h:commandLink>
+
+
+</h:form>
+
+<style type="text/css">
+    .value {
+        width: 1000px;
+    }
+    
+	.fc-event-time{
+	    display:none;
+	}
+
+	.ui-growl {
+		left:20px;
+	}
+</style>
+</ui:define>
+</ui:composition>

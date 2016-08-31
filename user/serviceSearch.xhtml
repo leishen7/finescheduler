@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template/usertemplate.xhtml">
+	<ui:define name="content">
+		<h:form style="padding:5px;">
+
+			
+			<p:dataTable id="searchResults" var="serv" value="#{serviceController.searchResults}">
+			    <p:column headerText="#{i18nconfig['appointment.searchresult.servicename']}">
+			        <h:link value="#{serv.serviceName}" outcome="appointment">
+			        	<f:param name="serviceId" value="#{serv.serviceId}"/>
+			        </h:link>
+			    </p:column>
+			    
+			    <p:column headerText="#{i18nconfig['appointment.searchresult.provider']}">
+			        <h:outputText value="#{serv.providerUser.userName}" />
+			    </p:column>			
+			    
+			   <p:column headerText="#{i18nconfig['appointment.searchresult.description']}">
+			        <h:outputText value="#{serv.description}" />
+			    </p:column>		
+			    
+   
+			
+			    <p:column headerText="#{i18nconfig['appointment.searchresult.businesshours']}">
+			    <h:outputText value="#{serv.startTime}" />  To <h:outputText value="#{serv.endTime}" />
+			    </p:column>
+			    			   <p:column headerText="#{i18nconfig['appointment.searchresult.minTime']}">
+			        <h:outputText value="#{serv.minTime}" />
+			    </p:column>	
+			    			   <p:column headerText="#{i18nconfig['appointment.searchresult.maxTime']}">
+			        <h:outputText value="#{serv.maxTime}" />
+			    </p:column>	
+			</p:dataTable>	
+			
+			<br></br>
+			<h:panelGrid columns="4" cellpadding="5">
+						                
+                <p:outputLabel for="city" value="#{i18nconfig['user.city']}" />
+				
+				<p:selectOneMenu id="city" value="#{serviceController.city}"  size="20" >
+				<p:ajax listener="#{serviceController.searchCityCategory}" update="category searchResults" />
+				
+                    <f:selectItem itemLabel="Select City" itemValue="" noSelectionOption="true" />
+                <f:selectItems value="#{serviceController.cities}" />
+                  </p:selectOneMenu>
+				<p:outputLabel for="category" value="#{i18nconfig['appointment.search.category']}" />
+				
+				<p:selectOneMenu id="category" value="#{serviceController.category}"  size="20" style="text-align: left">
+				<p:ajax listener="#{serviceController.searchCityCategory}" update="searchResults" />
+				
+                    <f:selectItem itemLabel="Select Category" itemValue="" noSelectionOption="true"  />
+                <f:selectItems value="#{serviceController.categories}" />
+                  </p:selectOneMenu>
+                  
+                 
+			
+				<p:outputLabel for="keywords" value="#{i18nconfig['appointment.search.keywords']}" />
+				<p:inputText id="keywords" value="#{serviceController.keywords}" size="20" />
+
+				<p:commandButton value="#{i18nconfig['appointment.button.search']}" update="searchResults" action="#{serviceController.searchServices}"/>
+			 </h:panelGrid>			
+		</h:form>
+	</ui:define>
+</ui:composition>

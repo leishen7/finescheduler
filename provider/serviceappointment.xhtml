@@ -1,0 +1,220 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template/providertemplate.xhtml">
+	<ui:define name="content">
+        <p style="position:absolute; left:70%;">
+		<h:outputLabel for="name" value="#{serviceAppointmentController.serv.serviceName}" />
+		</p>
+    <h:form>
+    <p:growl id="messages" showDetail="true"/>
+			<p:schedule id="schedule" value="#{serviceAppointmentController.eventModel}" 
+				class="scheduleContainer"
+				editable="true" 
+				draggable="false"
+				resizable="false"
+				widgetVar="v_schedule" 
+				ignoreTimezone="false" 
+				minTime="#{serviceAppointmentController.serv.startTime}:00"
+				maxTime="#{serviceAppointmentController.serv.endTime}:00"
+				view="agendaWeek">
+				
+				<p:ajax event="dateSelect"
+					listener="#{serviceAppointmentController.onDateSelect}"
+					update="newAppointment promotion" />
+					
+				<p:ajax event="eventSelect"
+					listener="#{serviceAppointmentController.onEventSelect}"
+					update="existingAppointment acceptingAppointment"/>
+	
+			</p:schedule>
+			<div style="position:absolute; center;padding-left: 150px;">
+			<h:outputLabel value="_______" style="background-color: #FFFF99;color:#FFFF99;" />
+			<h:outputLabel value="Requested  "  />
+			<h:outputLabel value="_______" style="background-color: #9DEDEC;color:#9DEDEC;" />
+			<h:outputLabel value="Confirmed  "  />
+			<h:outputLabel value="_______" style="background-color: #660033;color:#660033;" />
+			<h:outputLabel value=" No Working Day        "  />	
+			<h:outputLabel value="_______" style="background-color: #FFD1FF;color:#FFD1FF;" />
+			<h:outputLabel value=" Holiday         "  />	
+		</div>
+			
+			<p:dialog widgetVar="addingDialog" 
+				header="#{i18nconfig['appointment.dialog.title']}" 
+				showEffect="clip" 
+				hideEffect="clip"
+				modal="true">
+				<h:panelGrid id="newAppointment" columns="2">
+				<h:outputLabel value="#{i18nconfig['user.client']}" />					
+					<p:selectOneMenu id="username" value="#{serviceAppointmentController.servUser.userName}"  editable="true" style="width:180px" >
+						<p:ajax listener="#{serviceAppointmentController.chooseUsername}" update="email phone" />				
+                    		<f:selectItem itemLabel="Select User" itemValue="" noSelectionOption="true" />
+                				<f:selectItems value="#{serviceAppointmentController.usernames}" />
+                 	 </p:selectOneMenu>					
+						
+					<h:outputLabel value="#{i18nconfig['user.email']}"/>
+					<p:inputText id="email" value="#{serviceAppointmentController.servUser.email}">
+						<f:validator validatorId="custom.emailValidator" />
+					</p:inputText>		
+					
+					<h:outputLabel value="#{i18nconfig['user.phone']}"/>
+					<p:inputMask id="phone" value="#{serviceAppointmentController.servUser.phone}"  mask="(999) 999-9999">
+            		</p:inputMask>
+					
+	
+					<h:outputLabel for="addingDialog_from"
+						value="#{i18nconfig['appointment.dialog.label.from']}" />
+					<p:inputMask id="addingDialog_from"
+						value="#{serviceAppointmentController.newAppointment.startDate}"
+						mask="99/99/9999 99:99">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</p:inputMask>
+	
+					<h:outputLabel for="addingDialog_to"
+						value="#{i18nconfig['appointment.dialog.label.to']}" />
+					<p:inputMask id="addingDialog_to" value="#{serviceAppointmentController.newAppointment.endDate}"
+						mask="99/99/9999 99:99">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</p:inputMask>
+				</h:panelGrid>
+				
+				<p:commandButton id="makeButton"
+						value="#{i18nconfig['appointment.dialog.button.makeappointment']}"
+						update="schedule messages"
+						actionListener="#{serviceAppointmentController.addServUser}"
+						oncomplete="PF('addingDialog').hide();"/>
+			</p:dialog>
+			
+			<p:dialog widgetVar="editingDialog" 
+				header="#{i18nconfig['appointment.dialog.title']}" 
+				showEffect="clip" 
+				hideEffect="clip"
+				modal="true">
+				<h:panelGrid id="existingAppointment" columns="2">
+				<h:outputLabel value="#{i18nconfig['appointment.dialog.serviceName']}" />
+					<h:outputLabel value="#{serviceAppointmentController.existingAppointment.serviceBooking.serviceName}"/>	
+					<h:outputLabel value="#{i18nconfig['appointment.dialog.client']}" />
+					<h:outputLabel value="#{serviceAppointmentController.existingAppointment.serviceBooking.userName}" />
+					<h:outputLabel value="#{i18nconfig['user.phone']}" />
+					<h:outputLabel value="#{serviceAppointmentController.existingAppointment.serviceBooking.phone}"  />					
+					<h:outputLabel value="#{i18nconfig['user.email']}" />
+					<h:outputLabel value="#{serviceAppointmentController.existingAppointment.serviceBooking.email}"/>
+						
+					<h:outputLabel 	value="#{i18nconfig['appointment.dialog.label.notes']}" />
+					<h:outputLabel value="#{serviceAppointmentController.existingAppointment.notes}" />
+					
+					<h:outputLabel value="#{i18nconfig['appointment.dialog.label.from']}" />
+					<h:outputLabel id="editingDialog_from" value="#{serviceAppointmentController.existingAppointment.startDate}"  >	
+						<f:convertDateTime pattern="MMM dd HH:mm" />
+					</h:outputLabel>	
+					<h:outputLabel value="#{i18nconfig['appointment.dialog.label.to']}" />			
+					<h:outputLabel id="editingDialog_to" value="#{serviceAppointmentController.existingAppointment.endDate}">
+						<f:convertDateTime pattern="MMM dd HH:mm" />
+					</h:outputLabel>
+					
+							
+					<p:commandButton id="cancelButton" 
+					value="#{i18nconfig['appointment.dialog.button.cancelappointment']}" 
+						update="schedule messages"
+						actionListener="#{serviceAppointmentController.cancelEvent}"
+						oncomplete="PF('editingDialog').hide();" />						
+				</h:panelGrid>
+			</p:dialog>	
+			
+			
+			<p:dialog widgetVar="acceptingDialog"
+						header="#{i18nconfig['appointment.dialog.title']}" 
+						showEffect="clip" 
+						hideEffect="clip"
+						modal="true">
+						<h:panelGrid id="acceptingAppointment" columns="2">
+					<h:outputLabel value="#{i18nconfig['appointment.dialog.serviceName']}" />
+					<h:outputLabel value="#{serviceAppointmentController.existingAppointment.serviceBooking.serviceName}"/>	
+					<h:outputLabel value="#{i18nconfig['appointment.dialog.client']}" />
+					<h:outputLabel value="#{serviceAppointmentController.existingAppointment.serviceBooking.userName}" />
+					<h:outputLabel value="#{i18nconfig['user.phone']}" />
+					<h:outputLabel value="#{serviceAppointmentController.existingAppointment.serviceBooking.phone}"  />					
+					<h:outputLabel value="#{i18nconfig['user.email']}" />
+					<h:outputLabel value="#{serviceAppointmentController.existingAppointment.serviceBooking.email}"/>
+						
+					<h:outputLabel 	value="#{i18nconfig['appointment.dialog.label.notes']}" />
+					<h:outputLabel value="#{serviceAppointmentController.existingAppointment.notes}" />
+					
+					<h:outputLabel value="#{i18nconfig['appointment.dialog.label.from']}" />
+					<h:outputLabel value="#{serviceAppointmentController.existingAppointment.startDate}"  >	
+						<f:convertDateTime pattern="MMM dd HH:mm" />
+					</h:outputLabel>	
+					<h:outputLabel value="#{i18nconfig['appointment.dialog.label.to']}" />			
+					<h:outputLabel value="#{serviceAppointmentController.existingAppointment.endDate}">
+						<f:convertDateTime pattern="MMM dd HH:mm" />
+					</h:outputLabel>
+						
+							
+							<p:commandButton id="acceptButton"
+								value="#{i18nconfig['schedule.dialog.button.acceptappointment']}"
+								update="schedule messages"
+								actionListener="#{serviceAppointmentController.acceptEvent}"
+								oncomplete="PF('acceptingDialog').hide();" />
+								
+							<p:commandButton id="rejectButton" 
+							value="#{i18nconfig['schedule.dialog.button.rejectappointment']}" 
+								update="schedule messages"
+								actionListener="#{serviceAppointmentController.rejectEvent}"
+								oncomplete="PF('acceptingDialog').hide();" />						
+						</h:panelGrid>
+					</p:dialog>
+					
+					
+			<p:dialog widgetVar="promDialog" 
+				header="New Promotion" 
+				showEffect="clip" 
+				hideEffect="clip"
+				modal="true">
+				<h:panelGrid id="promotion" columns="2">
+							
+					<h:outputLabel for="promDialog_date"
+						value="Date" />
+					<h:outputLabel id="promDialog_date" value="#{serviceAppointmentController.newAppointment.startDate}" >
+						<f:convertDateTime pattern="MMM dd, yyyy" />
+					</h:outputLabel>
+					
+								<h:outputLabel for="promDialog_notes"
+						value="Detail" />
+					<p:inputTextarea rows="1" cols="30"  id="promDialog_notes" value="#{serviceAppointmentController.newAppointment.notes}"  maxlength="200" />
+	
+				</h:panelGrid>
+				
+				<p:commandButton id="submitPromotion"
+						value="Submit"
+						update="schedule messages"
+						actionListener="#{serviceAppointmentController.addPromotion}"
+						oncomplete="PF('promDialog').hide();"/>
+			</p:dialog>
+			
+					
+		</h:form>
+		
+		<script type="text/javascript">
+    /**
+     * Faces Validator
+     */
+    PrimeFaces.validator['custom.emailValidator'] = {
+
+        pattern: /\S+@\S+/,
+
+        validate: function(element, value) {
+            //use element.data() to access validation metadata, in this case there is none.
+            if(!this.pattern.test(value)) {
+                throw {
+                    summary: 'Validation Error',
+                    detail: value + ' is not a valid email.'
+                }
+            }
+        }
+    };
+
+</script>
+		</ui:define>
+</ui:composition>

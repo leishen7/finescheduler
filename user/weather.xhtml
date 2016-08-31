@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+    xmlns:pm="http://primefaces.org/mobile">
+    
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+    
+    <h:head>
+
+    </h:head>
+    
+    <h:body>
+        
+        <pm:page id="main">
+            <pm:header title="Weather" swatch="b">
+                <p:button styleClass="ui-btn-right ui-btn-inline" value="Settings" icon="ui-icon-gear" outcome="pm:settings" />
+            </pm:header>
+            
+            <pm:content>
+                
+                <h:form id="mainForm">
+                    <pm:field>
+                        <p:outputLabel for="city" value="Select City:" />
+                        <p:selectOneMenu id="city" value="#{weatherView.city}">
+                            <f:selectItems value="#{weatherView.cities}" />
+                        </p:selectOneMenu>
+                    </pm:field>
+
+                    <p:commandButton value="Get Forecast" update="display" actionListener="#{weatherView.retrieveConditions}"/>
+
+                    <p:outputPanel id="display" style="text-align:center">
+                        <h:outputText value="#{weatherView.conditions}" escape="false" />
+                    </p:outputPanel>
+                </h:form>
+                
+            </pm:content>
+        </pm:page>
+        
+        <pm:page id="settings">
+            <pm:header title="Settings" swatch="b">
+                <p:button styleClass="ui-btn-left ui-btn-inline" value="Back" icon="ui-icon-arrow-l" outcome="pm:main" />
+            </pm:header>
+            
+            <pm:content>
+                
+                <h:form id="settingsForm">
+                    <pm:field>
+                        <p:outputLabel for="unit" value="Unit:" />
+                        <p:selectOneMenu id="unit" value="#{weatherView.unit}">
+                            <f:selectItem itemLabel="Celcius" itemValue="c" />
+                            <f:selectItem itemLabel="Fahrenheit" itemValue="f" />
+                        </p:selectOneMenu>
+                    </pm:field>
+
+                    <p:commandButton value="Save" action="#{weatherView.saveSettings}"/>
+                </h:form>
+                
+            </pm:content>
+        </pm:page>
+    </h:body>
+    
+</html>

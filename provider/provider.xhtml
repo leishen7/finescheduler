@@ -1,0 +1,107 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:p="http://primefaces.org/ui"
+template="/WEB-INF/template/providertemplate.xhtml">
+<ui:define name="content">
+<div id="centerText">
+<h:form>
+        <p:messages id="msgs" />
+
+        <h:panelGrid id="panel" columns="3" cellpadding="5">
+          <p:outputLabel for="userid" value="#{i18nconfig['user.userid']}:" />
+            <p:inputText id="userid" value="#{userView.user.userId}" required="true" label="User ID">
+                <f:validateLength minimum="6" />
+            </p:inputText>
+            <p:message for="userid" display="icon" />
+        
+            <p:outputLabel for="firstname" value="#{i18nconfig['user.firstname']}:" />
+            <p:inputText id="firstname" value="#{userView.user.firstname}" required="true" label="Firstname">
+                <f:validateLength minimum="2" />
+            </p:inputText>
+            <p:message for="firstname" display="icon" />
+
+            <p:outputLabel for="lastname" value="#{i18nconfig['user.lastname']}:"  />
+            <p:inputText id="lastname" value="#{userView.user.lastname}" label="Lastname" required="true">
+                <f:validateLength minimum="2" />
+              </p:inputText>
+            <p:message for="lastname" id="msgLastname" display="icon" />
+            
+            <p:outputLabel for="password" value="#{i18nconfig['login.label.password']}:" />
+            <p:password id="password" value="#{userView.user.password}" match="password2" label="Password" required="true" />
+            <p:message for="password" id="msgPassword" display="icon" />
+
+            <p:outputLabel for="password2" value="#{i18nconfig['user.confirmpassword']}:"  />
+            <p:password id="password2" value="#{userView.user.password}" label="Confirm Password" required="true" />
+             <p:message for="password2" id="msgPassword2" display="icon" />
+             
+            <p:outputLabel for="email" value="#{i18nconfig['user.email']}:" />
+            <p:inputText id="email" value="#{userView.user.email}" required="true" label="Email">
+                <f:validator validatorId="custom.emailValidator" />
+            </p:inputText>
+            <p:message for="email" id="msgEmail" display="icon" />
+            
+            
+            <h:outputLabel for="phone" value="#{i18nconfig['user.phone']}:" />					
+            <p:inputText id="phone" value="#{userView.user.phone}" validatorMessage="Value does not match pattern.">
+                <f:validateRegex pattern="^\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$" />
+            </p:inputText>
+            <p:message for="phone" id="msgPhone" display="icon" />
+            
+            <p:outputLabel for="phoneProvider" value="#{i18nconfig['user.phoneProvider']}:" />
+      
+			<p:selectOneMenu id="phoneProvider" value="#{userView.user.phoneProvider}" editable="true"  required="false">
+			      <f:selectItem itemLabel="Select Provider" itemValue=""  noSelectionOption="true" />
+                <f:selectItems value="#{userView.phoneProviders}" />
+            </p:selectOneMenu>
+            <p:message for="phoneProvider"  id="msgPhoneProvider" display="icon" />
+            
+            <p:outputLabel for="city" value="#{i18nconfig['user.city']}:" />
+      			<p:selectOneMenu id="city" value="#{userView.user.city}" editable="true"  required="true">
+			      <f:selectItem itemLabel="Select City" itemValue=""  noSelectionOption="true" />
+                <f:selectItems value="#{userView.cities}" />
+                <f:validateLength minimum="2" />
+                  </p:selectOneMenu>
+            <p:message for="city"  id="msgCity" display="icon" />
+ 
+            
+            <h:outputLabel for="address" value="#{i18nconfig['user.address']}:" />
+            <p:inputTextarea id="address" value="#{userView.user.address}" required="false" label="address" style="width:300px">
+                <f:validateLength minimum="3" maximum="150" /> 
+            </p:inputTextarea>
+            <p:message for="address" id="msgAddress" display="icon" />
+            
+            
+            <h:outputLabel for="postalCode" value="#{i18nconfig['user.postalcode']}:"/>					
+            <p:inputText id="postalCode" value="#{userView.user.postalCode}" validatorMessage="Value does not match pattern.">
+                <f:validateRegex pattern="(^[A-Za-z]{1}\d{1}[A-Za-z]{1} *\d{1}[A-Za-z]{1}\d{1}$)|(^\d{5}(-\d{4})?$)" />
+            </p:inputText>
+            <p:message for="postalCode" id="msgPostalCode" display="icon" />
+        </h:panelGrid>
+
+        <p:commandButton value="#{i18nconfig['service.button.updateService']}" update="panel" actionListener="#{userView.update}" icon="ui-icon-check" />
+</h:form>
+</div>
+<script type="text/javascript">
+    /**
+     * Faces Validator
+     */
+    PrimeFaces.validator['custom.emailValidator'] = {
+
+        pattern: /\S+@\S+/,
+
+        validate: function(element, value) {
+            //use element.data() to access validation metadata, in this case there is none.
+            if(!this.pattern.test(value)) {
+                throw {
+                    summary: 'Validation Error',
+                    detail: value + ' is not a valid email.'
+                }
+            }
+        }
+    };
+
+</script>
+</ui:define>
+</ui:composition>

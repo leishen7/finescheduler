@@ -1,0 +1,138 @@
+package com.nuexpert.schd.db;
+
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.nuexpert.schd.vo.Service;
+
+@SuppressWarnings("serial")
+@ManagedBean
+@ApplicationScoped
+public class ServiceDAO implements Serializable{
+	private final static String INSERT_SQL="insert into service(service_id, service_name, provider) values(?, ?, ?)";
+	private final static String QUERY_SQL = "select service_id, service_name, start_time, end_time from service where provider=?";
+	private final static String LOAD_SQL = "select service_id, service_name from service where provider=? and service_name like ?";
+	private final static String SEARCH_SQL = "select service_id, service_name, provider, start_time, end_time from service where provider!=? and service_name like ?";
+	
+	public void addService(Service serv) throws Exception{
+		Connection conn = DBUtil.getConnection();
+		
+		PreparedStatement ps =  conn.prepareStatement(INSERT_SQL); 
+		int index = 1;
+		ps.setString(index++, serv.getServiceId());
+		ps.setString(index++, serv.getServiceName());
+		ps.setString(index++, serv.getProvider());
+		
+		ps.executeUpdate();
+		
+		ps.close();
+		conn.close();
+	}
+	
+	public List<Service> getServices(String provider) throws Exception{
+		
+		if (StringUtils.isBlank(provider)){
+			return null;
+		}
+		
+		Connection conn = DBUtil.getConnection();
+		
+		PreparedStatement ps =  conn.prepareStatement(QUERY_SQL); 
+		int index = 1;
+		ps.setString(index++, provider);
+		
+		ResultSet rs = ps.executeQuery();
+		
+		List<Service> resultList = new ArrayList<Service>();
+		
+		while(rs.next()){
+			Service serv = new Service();
+			serv.setServiceId(rs.getString("service_id"));
+			serv.setServiceName(rs.getString("service_name"));
+			serv.setStartDate(DBUtil.getDate(rs.getDate("start_time")));
+			serv.setEndDate(DBUtil.getDate(rs.getDate("end_time")));
+ 
+			resultList.add(serv);
+		}
+		
+		rs.close();
+		ps.close();
+		conn.close();
+		
+		return resultList;		
+	}
+	
+	public List<Service> loadServices(String provider, String serviceName) throws Exception{
+		if (StringUtils.isBlank(provider)){
+			return null;
+		}
+		Connection conn = DBUtil.getConnection();
+		
+		PreparedStatement ps =  conn.prepareStatement(LOAD_SQL); 
+		int index = 1;
+		ps.setString(index++, provider);
+		ps.setString(index++, StringUtils.trimToEmpty(serviceName)+"%");
+		
+		ResultSet rs = ps.executeQuery();
+		
+		List<Service> resultList = new ArrayList<Service>();
+		
+		while(rs.next()){
+			Service serv = new Service();
+			
+			serv.setServiceId(rs.getString("service_id"));
+			serv.setServiceName(rs.getString("service_name"));
+ 
+			resultList.add(serv);
+		}
+		
+		rs.close();
+		ps.close();
+		conn.close();
+		
+		return resultList;
+	}
+	
+	public List<Service> searchServices(String userId, String serviceName) throws Exception{
+		if (StringUtils.isBlank(userId)){
+			return null;
+		}		
+		
+		Connection conn = DBUtil.getConnection();
+		PreparedStatement ps =  conn.prepareStatement(SEARCH_SQL); 
+		int index = 1;
+		ps.setString(index++, StringUtils.trimToEmpty(userId));
+		ps.setString(index++, StringUtils.trimToEmpty(serviceName)+"%");
+		
+		ResultSet rs = ps.executeQuery();
+		
+		List<Service> resultList = new ArrayList<Service>();
+		
+		while(rs.next()){
+			Service serv = new Service();
+			
+			serv.setServiceId(rs.getString("service_id"));
+			serv.setServiceName(rs.getString("service_name"));
+			serv.setProvider(rs.getString("provider"));
+			serv.setStartDate(DBUtil.getDate(rs.getDate("start_time")));
+			serv.setEndDate(DBUtil.getDate(rs.getDate("end_time")));			
+ 
+			resultList.add(serv);
+		}
+		
+		rs.close();
+		ps.close();
+		conn.close();
+		
+		return resultList;
+	}	
+}

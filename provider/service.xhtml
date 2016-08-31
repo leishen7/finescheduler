@@ -1,0 +1,67 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template/providertemplate.xhtml">
+	<ui:define name="content">
+	<div id="centerText">
+		<h:form>
+<h:panelGrid columns="2" cellpadding="5"		columnClasses="servlabel,servValue">
+<p:outputLabel for="serviceName" value="#{i18nconfig['service.label.serviceName']}" />
+						<p:inputText id="serviceName" value="#{serviceView.serv.serviceName}" size="20"/>
+						<p:outputLabel for="description" value="#{i18nconfig['service.label.description']}" />
+						<p:inputTextarea rows="2" cols="70"  id="description" value="#{serviceView.serv.description}" />
+						<p:outputLabel for="startTime" value="#{i18nconfig['service.label.startTime']}" />
+						<p:inputMask id="startTime" value="#{serviceView.serv.startTime}" mask="99:99" size="20">
+						</p:inputMask>
+						<p:outputLabel for="endTime" value="#{i18nconfig['service.label.endTime']}" />
+						<p:inputMask id="endTime" value="#{serviceView.serv.endTime}"  mask="99:99" size="20">
+						</p:inputMask>
+						<p:outputLabel for="minTime" value="#{i18nconfig['service.label.minTime']}" />
+						<p:inputMask id="minTime" value="#{serviceView.serv.minTime}"  mask="99?9" size="20">
+						</p:inputMask>
+						<p:outputLabel for="incrementTime" value="#{i18nconfig['service.label.incrementTime']}" />
+						<p:inputMask id="incrementTime" value="#{serviceView.serv.incrementTime}"  mask="?99" size="20">
+						</p:inputMask>
+						
+						<p:outputLabel for="maxTime" value="#{i18nconfig['service.label.maxTime']}" />
+						<p:inputMask id="maxTime" value="#{serviceView.serv.maxTime}"  mask="99?9" size="20">
+						</p:inputMask>
+						
+								<p:outputLabel for="category"
+						value="#{i18nconfig['appointment.search.category']}" />
+					<p:selectOneMenu id="category"
+						value="#{serviceView.serv.category}" editable="true"
+						style="width:180px">
+
+
+						<f:selectItem itemLabel="Select Category" itemValue=""
+							noSelectionOption="true" />
+						<f:selectItems value="#{serviceController.categories}" />
+					</p:selectOneMenu>
+						 <p:outputLabel for="needApproval"  value="#{i18nconfig['service.label.needApproval']}" />
+						 <p:selectBooleanButton id="needApproval" value="#{serviceView.serv.needApproval}" onLabel="Yes" offLabel="No" style="width:60px" />
+						<p:outputLabel for="noServiceDay"  value="#{i18nconfig['service.label.noserviceday']}" size="20" />
+						 <p:selectManyCheckbox  id="noServiceDay" value="#{serviceView.serv.noServiceDay}" >
+						           <f:selectItem itemLabel="Monday" itemValue="2" />
+            						<f:selectItem itemLabel="Tuesday" itemValue="3" />
+            						<f:selectItem itemLabel="Wednesday" itemValue="4" />
+            						<f:selectItem itemLabel="Thursday" itemValue="5" />
+            						<f:selectItem itemLabel="Friday" itemValue="6" />
+            						<f:selectItem itemLabel="Saturday" itemValue="7" />
+            						<f:selectItem itemLabel="Sunday" itemValue="1" />
+       					 </p:selectManyCheckbox>
+		  </h:panelGrid>
+
+						
+			
+			<p>
+				<p:commandButton value="#{i18nconfig['service.button.updateService']}" action="#{serviceView.updateService}" />
+				<p:commandButton value="#{i18nconfig['service.button.deleteService']}" action="#{serviceView.deleteService}" />
+			</p>
+		</h:form>
+
+</div>
+	</ui:define>
+</ui:composition>
